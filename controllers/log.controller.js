@@ -68,9 +68,15 @@ router.delete('/:id', validate, (req, res) => {
             id: req.params.id
         }
     })
-    .then(purged => res.status(200).json({ message: `Log ${req.params.id} has been removed!`, purged }))
-    .catch(err => res.status(500).json({message: "Something went wrong.", error: err}))
+    .then(purged => {
+        if (!purged) {
+            res.status(500).json({ message: `You're not Authorized to delete log: ${req.params.id}`, purged })
+        }
+        else {
+            res.status(200).json({ message: `Log ${req.params.id} has been removed!`, purged })
+        }
+    })
+    .catch(err => res.status(500).json({ message: "Something went wrong.", error: err} ))
 })
-
 
 module.exports = router;
